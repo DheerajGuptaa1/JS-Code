@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+          <meta charset="UTF-8">
+          <meta http-equiv="X-UA-Compatible" content="IE=edge">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Weather API </title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+<style>
+        *{ margin: 0; box-sizing: border-box;}
+        .container
+        {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            padding: 0 10px;
+            margin: 5px 200px 0 200px;
+            color: white;
+            position: relative;
+            height: 800px; width: 1200px;
+            background-image:url(./Weather-pix/Sunny_bright.jpg);        
+            background-repeat: no-repeat; background-size:cover; z-index: 3;}
+
+        .current
+            {line-height: 36px; padding: 7px 7px; text-align: center; font-size: 32px; border-radius: 10px; background-color: lightblue; box-shadow: 6px 6px 6px 6px darkblue inset; text-shadow: 3px 3px 3px goldenrod; color: tomato;}
+
+        .err2
+        {line-height: 36px; padding: 7px 7px; text-align: center; font-size: 32px; border-radius: 10px; background-color: lightblue; box-shadow: 6px 6px 6px 6px darkblue inset; text-shadow: 3px 3px 3px goldenrod; color: tomato; margin-left: 182px;}
+        
+        image{vertical-align: bottom;}
+
+        .flex{ display: flex; flex-flow: row wrap; padding: 10px 30px 0 30px;}
+
+        .col{ flex: 1 0 100%; max-width: 40%; height: 600px ; border: 1px solid #666; margin-bottom: 20px;     margin-top: 8px;
+        background-image: linear-gradient( 135deg, rgba(255, 0, 0, .6), rgba(0, 255, 0, .6));}
+
+        .half1{ flex: 1 0 50%; max-width: 100%; padding: 10px; text-align: left}
+        .half2{ flex: 1 0 50%; max-width: 100%; padding: 10px; text-align: right;}
+        .center{padding: 10px; text-align: left;}
+        .Search {margin: 250px 503px; width: 720px; position: absolute; }
+        .C{font-size: 28px; color: maroon}
+        label::first-letter{color: blue;}
+        .fa{position:absolute;}        
+
+</style>
+</head>
+
+<body>
+     <div class="container" id="pic">
+        <span>Weather Report</span> 
+        <div class="CurrentLocation">
+            <form action="." name="c_location">
+                <button type="button" class="cLocation" style="font-size: 36px; display: inline-block; background-color: darkolivegreen; color: burlywood; margin-right: 24px;">
+                    <i class="fa-solid fa-location-crosshairs"></i>
+                </button>
+                <span class="current"></span>
+            </form>
+        </div>
+    
+    <div class="Search">
+        <form action="." name="City_Search">
+            <label class="C"> <b>City Weather</b>  <input type="search" name="cityS" style="line-height: 40px; padding: 7px 7px; text-align: center; font-size: 36px; border-radius: 10px; background-color: lightblue; box-shadow: 6px 6px 6px 6px darkblue inset; text-shadow: 3px 3px 3px rgb(167, 128, 29); color: maroon; position: relative;">
+                <button style="line-height: 40px; padding: 7px 7px; text-align: center; font-size: 36px; background-color: lightblue; border: none; background: transparent; text-shadow: 3px 3px 3px rgb(167, 128, 29); color: maroon;
+                position: absolute;
+                right: 142px;
+                bottom: 38px;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </label>
+            <br>
+            <span class="err2"></span>
+        </form>
+    </div>
+
+    <div class="row"></div>  
+</div>    
+<script>
+     "use strict";
+
+         document.querySelector('.cLocation')
+        .addEventListener("click",function()
+        {
+            navigator.geolocation.getCurrentPosition(success);
+            function success(positions)
+            {
+                var lat1=positions.coords.latitude;
+                var lon1=positions.coords.longitude;
+                let apiKey="c604fac4064506ff2e0ed9a28827621b";
+                fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat1}&lon=${lon1}&APPID=${apiKey}`)
+                .then(i=>i.json())
+                .then(i=>     
+                {
+                    console.log(i.name);
+                    document.querySelector('.current').innerHTML=`Temp for Your Current Location ${i.name} City: ${(i.main.temp-273.15).toFixed(2)}`;
+                }
+                );
+            }
+        });
+
+     document.City_Search.addEventListener("submit",function(e)
+     {
+        e.preventDefault();
+        document.querySelector(".row").innerHTML="";
+        document.querySelector(".err2").innerHTML="";
+        let city=this.cityS.value;
+
+     fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=c604fac4064506ff2e0ed9a28827621b`)
+     .then(res => res.json())
+     .then(mausam => 
+     {
+        if(mausam.cod=="404")
+        {
+            document.querySelector(".err2").innerHTML="No City found";
+            document.querySelector(".err2").style="color:red";
+        }
+        else
+        {
+            let col=document.createElement("div");
+            col.classList.add("col");
+            let temp=mausam.main.temp-273.15;
+            temp=temp.toFixed(2);
+
+        if(temp>=29 && temp<=36)
+        {
+            document.querySelector('.container').style.backgroundImage=`url(./Weather-pix/Clear_weather_CountrySide.jpg)`;
+        }
+
+        if(temp>=22 && temp<=28)
+        {
+            document.querySelector('.container').style.backgroundImage=`url(./Weather-pix/Fall_weather.jpeg)`;
+        }
+
+        if(temp>=14 && temp<=21)
+        {
+            document.querySelector('.container').style.backgroundImage=`url(./Weather-pix/Gangtok_Sightseeing.jpg);)`;
+        }
+
+        if(temp<=13 && temp>=6)
+        {
+            document.querySelector('.container').style.backgroundImage=`url(./Weather-pix/dechen-phodrang-monastery.webp)`;
+        }
+
+        if(temp>=-12 && temp<=5)
+        {
+            document.querySelector('.container').style.backgroundImage=`url(./Weather-pix/Icy_Cold.jpg)`;
+        }
+
+            col.innerHTML=
+                    `<div class="flex">
+                        <div class="half1">
+                            <h1><span style="color: maroon; font-size: 42px"> ${mausam.name} </span></h1>
+                            <h2><b></b> <span style="color: maroon;"> ${mausam.sys.country} </span></p>
+                            <h3></b> + ${(mausam.timezone)/3600} HOURS</h3>
+                            <h3 style="text-shadow: 5px 5px 5px pink;"><i class="fa-solid fa-wind"></i> <b>Wind: </b><span style="color: maroon;"> ${mausam.wind.speed}</span></h4>
+                            <h3 style="text-shadow: 5px 5px 5px pink;"><i class="fa-solid fa-droplet"></i> <b>Humidity: </b><span style="color: maroon;"> ${mausam.main.humidity}%</span></h4>
+                        </div>
+                        
+                        <div class="half2">
+                            <h2><span style="color: maroon; font-size: 72px">${(mausam.main.temp-273.15).toFixed(2)}&deg;C</span></h2>
+                            <h3 style="text-shadow: 5px 5px 5px pink;"><b>Temp. Min: </b><span style="color: maroon;">${(mausam.main.temp_min-273).toFixed(2)}</span></h3>
+                            <h3 style="text-shadow: 5px 5px 5px pink;"><b>Temp. Max: </b><span style="color: maroon;">${(mausam.main.temp_max-273).toFixed(2)}</span></h3>
+                            <h3 style="text-shadow: 5px 5px 5px pink;">Feels Like: <span style="color: maroon;">${(mausam.main.feels_like-273).toFixed(2)}</span></h3>
+                        </div>
+                    </div>
+
+                    <div class="center">
+                        <h3 style="text-shadow: 5px 5px 5px pink;"><b>Weather:</b> <span style="color: maroon;">${mausam.weather[0].main} </span></h3>
+                        <h3 style="text-shadow: 5px 5px 5px pink;"><b>Description:</b> <span style="color: maroon;">${mausam.weather[0].description}</span></h3>
+                        <h3 style="text-shadow: 5px 5px 5px pink;">Sunrise: <span style="color: maroon;">${(new Date(Number(mausam.sys.sunrise+"000")).toLocaleTimeString())}</span></h3>
+                        <h3 style="text-shadow: 5px 5px 5px pink;">Sunset: <span style="color: maroon;">${(new Date(Number(mausam.sys.sunset+"000")).toLocaleTimeString())}</span></h3>
+                        <p style="text-shadow: 7px 7px 7px pink;">Coord--> Longitude: ${mausam.coord.lon} & Lattitude: ${mausam.coord.lat} </p>
+                        <p style="text-shadow: 7px 7px 7px pink;">City ID: ${mausam.weather[0].id}</p>
+                    </div>`;
+                    document.querySelector(".row").appendChild(col);
+                }
+            });        
+        });         
+</script>     
+</body>
+</html>

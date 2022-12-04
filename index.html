@@ -102,7 +102,7 @@
         document.querySelector(".err2").innerHTML="";
         let city=this.cityS.value;
 
-     fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=c604fac4064506ff2e0ed9a28827621b`)
+     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=c604fac4064506ff2e0ed9a28827621b`)
      .then(res => res.json())
      .then(mausam => 
      {
